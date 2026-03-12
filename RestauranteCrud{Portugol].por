@@ -10,7 +10,7 @@ programa
 	
 	funcao inicio()
 	{
-		cadeia userInput ="", pulaLinha = "\n\n"
+		cadeia entradaUsuario ="", pulaLinha = "\n\n"
 		cadeia title2 = "===== - FAÇA SEU PEDIDO - ====="
 		cadeia vetorMenu[QTDPROD][3] = {
 				{"100","Cachorro Quente","1.20"},
@@ -21,26 +21,28 @@ programa
 				{"105","Refrigerante","1.00"}
 			}
 		cadeia clientComanda[QTDPROD][4] = {
-   {"3","Cachorro Quente","3.60","100"},
-   {"","","",""},
-   {"","","",""},
-   {"","","",""},
-   {"","","",""},
-   {"","","",""}
-}
-			 //esse vetor é dividi em = [Qual Produto][Quantidade,Nome, Total,codigo]
+			   {"3","Cachorro Quente","3.60","100"},
+			   {"","","",""},
+			   {"","","",""},
+			   {"","","",""},
+			   {"","","",""},
+			   {"","","",""}
+			}
+
 		cadeia readOpcao [TOTALOPCAO] = {"[1] - Ler Cardapio","[2] - Fazer Pedido ","[3] - Ver meu Pedido ","[4] - Remover Pedido ","[0] - Sair da Lanchonete"}
 		
 		faca{
 			limpa()
 			cadeia escolhaUsuario = ""
+
+			escreva("==== - RESTAURANTE DO CRUD - ====",pulaLinha)
 			para(inteiro m = 0; m < TOTALOPCAO ; m++){
 				escreva(readOpcao[m] + "\n")
 			}
 			escreva(">> ")
-			leia(userInput)
+			leia(entradaUsuario)
 
-			se(userInput == "1"){
+			se(entradaUsuario == "1"){
 				limpa()
 				enquanto (escolhaUsuario != "0"){
 					escreva("===== - MENU - =====",pulaLinha)
@@ -53,7 +55,7 @@ programa
 					se(trataescolhaUsuario(escolhaUsuario,"0")) pare
 			
 				}				
-			}senao se(userInput == "2"){
+			}senao se(entradaUsuario == "2"){
 				limpa()
 				enquanto(escolhaUsuario != "0"){
 					logico achouProduto = falso
@@ -82,7 +84,7 @@ programa
 								
 								se(validaNumero(prodQuatd)){
 
-									logico newProduct = falso//protege os "se"
+									logico novoProduto = falso
 									
 
 									para(inteiro b = 0;b < QTDPROD ; b++){
@@ -103,16 +105,15 @@ programa
 											escreva("\n\nSalvando seu pedido")
 											Util.aguarde(2000)
 											
-											newProduct = verdadeiro
+											novoProduto = verdadeiro
 											pedidoFinalizado = verdadeiro
 											escolhaUsuario = "0"
 											pare										
 										}										
 									}
-									se(newProduct == falso){
+									se(nao novoProduto ){
 										para(inteiro b = 0; b < QTDPROD;b++){
 
-										//se(clientComanda[b][1] != vetorMenu[a][1]) << ocasiona erro fazendo pedido ser rescrito, troquei == ""
 											se(clientComanda[b][1] == ""){
 												real currentQtd = converteCadReal(prodQuatd)
 												real price = converteCadReal(vetorMenu[a][2])
@@ -127,30 +128,23 @@ programa
 												escreva("\n\nSalvando seu pedido")
 												Util.aguarde(2000)
 												
-												newProduct = verdadeiro
+												novoProduto = verdadeiro
 												pedidoFinalizado = verdadeiro
 												escolhaUsuario = "0"
 												pare
 
-												//TODO
-												//Esta RESCREVENDO TOTAL PEDIDOS
 											}											
 										}
 									}
 								}senao{
 									erroMensagem("UNIDADE INVALIDA","Digite números inteiros para quantidade de produtos.")
-								}
-								
+								}							
 							}
-						
 						}
 					}se(trataescolhaUsuario(escolhaUsuario,"0")) pare			
-				}
-				
-						
-			}senao se(userInput == "3"){
+				}		
+			}senao se(entradaUsuario == "3"){
 				limpa()
-				//Devido aos espaços vazios usamos uma conferencia de logica
 				enquanto(escolhaUsuario != "0"){
 					logico clientRequest = falso
 					real totalProdPrices = 0.0
@@ -158,10 +152,12 @@ programa
 					para(inteiro c= 0;c < QTDPROD; c++){
 						
 						se(clientComanda[c][1] != ""){
-							escreva("Quantidade: " , clientComanda[c][0] + "| ")
-							escreva(clientComanda[c][1]+ "| ")
+							escreva("Quantidade: " , clientComanda[c][0] + " | ")
+							escreva(clientComanda[c][1]+ " | ")
 							escreva("Total R$ ",clientComanda[c][2])
 							escreva("\n")
+
+							Util.aguarde(100)
 
 							totalProdPrices += converteCadReal(clientComanda[c][2])
 
@@ -176,39 +172,39 @@ programa
 				escreva("\nDigite [0] para voltar ao menu anterior: ")escreva("\n>> ")
 				leia(escolhaUsuario)
 				}
-			}senao se(userInput == "4"){
+			}senao se(entradaUsuario == "4"){
 				limpa()
 				enquanto(escolhaUsuario != "0"){
-					logico TemPedido = falso
+			
 					logico removerPedido = falso
 					cadeia escolhaUsuario04
 					cadeia title4 = "===== - REMOVER PEDIDO - ====="
 					
 					escreva(title4,pulaLinha)		
+					///================= VISUAL =======================///
 					
 					para(inteiro i = 0; i < QTDPROD; i++){
 							
-						se(clientComanda[i][1] != ""){ //evita leitura NULL
+						se(clientComanda[i][1] != ""){ 
 								
 							escreva(clientComanda[i][3] + " | ")
 							escreva("Quantidade: " , clientComanda[i][0] + " | ")
 							escreva(clientComanda[i][1]+ " | ")
 							escreva("Total R$ ",clientComanda[i][2])
 							escreva("\n")
+							Util.aguarde(100)
 						}		
 					}
 					
 					///========================================///
 					
-					escreva("Digite o codigo do produto que você quer remover")
+					escreva("\nDigite o codigo do produto que você quer remover")
 					escreva("\nDigite [0] para voltar ao menu anterior: ")
 					escreva("\n>> ")
 					leia(escolhaUsuario)
 					limpa()
 
 					para(inteiro i = 0; i < QTDPROD; i++){
-
-						TemPedido = verdadeiro
 
 						se(escolhaUsuario == clientComanda[i][3]){
 
@@ -238,14 +234,19 @@ programa
 								}senao se(escolhaUsuario04 == "0"){
 									removerPedido = verdadeiro
 									escolhaUsuario = "0"		
-					
-								}senao se(validaNumero(escolhaUsuario04)){
+													}
+								senao se(validaNumero(escolhaUsuario04)){
 									
 									inteiro tempEscolhaQtd = converteCadInt(escolhaUsuario04)
 
 									se(tempEscolhaQtd > 0 e tempEscolhaQtd <= tempQtd){
 
 										inteiro calcTotal = tempQtd - tempEscolhaQtd
+										real valorTotTemp = converteCadReal(clientComanda[i][2])
+										inteiro quantidadeTemp = converteCadInt(clientComanda[i][0])
+				
+										clientComanda[i][2] = converteRealCad((valorTotTemp/quantidadeTemp) * (quantidadeTemp - tempEscolhaQtd))
+										clientComanda[i][0] = converteIntCad(calcTotal)
 										
 										se(calcTotal == 0){
 											clientComanda[i][0] = ""
@@ -254,66 +255,39 @@ programa
 											clientComanda[i][3] = ""
 										}										
 										
-										real valorTot = converteCadReal(clientComanda[i][2])
-										
-										clientComanda[i][0] = converteIntCad(calcTotal)
-										
-										
 										escreva("Removendo Seu Pedido da Comanda")
 										Util.aguarde(2000)
 										removerPedido = verdadeiro
 										escolhaUsuario = "0"	
-									}
-								}
-									
-								
-							}
-							
-						
-				
-
-						
-						}
-					
-					/*para(inteiro j =0 ; j < QTDPROD; j ++){
-
-						haveArequest = verdadeiro
-						
-						se(clientComanda[j][3] == escolhaUsuario){
-							clientComanda[j][0] = ""
-							clientComanda[j][1] = ""
-							clientComanda[j][2] = ""
-							clientComanda[j][3] = ""
-							
-					}	*/
-
 										
+									}senao{
+										erroMensagem("QUANTIDADE INVALIDA","A quantidade de ser maior que zero e igual ou \nmenor que a quantidade do pedido registrado na comanda")
+									}
+								}senao{
+									erroMensagem("ENTRADA INVALIDA","Entre Com Uma Opçâo Igual A Do Menu")
+								}					
+							}			
+						}				
 					
-					se(trataescolhaUsuario(escolhaUsuario,"0")) pare
 					}
-				
-				
+					se(trataescolhaUsuario(escolhaUsuario,"0")) pare						
 				}	
 			
-			//TODO
-			//Fazer opcao 4
-               //Objetivo:  Remover Produto
-			
 			//======================FINALMENU======================
-			}senao se(userInput == "0"){
+			}senao se(entradaUsuario == "0"){
 				limpa()
 				escreva("==== - SAINDO DO PROGRAMA - ====")
 				Util.aguarde(1000)
 			}
 			senao  {
-				erroMensagem("ENTRADA INVALIDA","Entre com uma opção ´válida ao do Menu")
+				erroMensagem("ENTRADA INVALIDA","Entre com uma opção válida ao do Menu")
 			}
 			
 			limpa()
 		
-		}enquanto(userInput != "0")
+		}enquanto(entradaUsuario != "0")
+		escreva("\n==== - FIM DO PROGRAMA - ====\n")
 	}
-
 
 
 	funcao logico trataescolhaUsuario(cadeia INPUT,cadeia OPCAO){
@@ -373,7 +347,7 @@ programa
  * Esta seção do arquivo guarda informações do Portugol Studio.
  * Você pode apagá-la se estiver utilizando outro editor.
  * 
- * @POSICAO-CURSOR = 8060; 
+ * @POSICAO-CURSOR = 9106; 
  * @PONTOS-DE-PARADA = ;
  * @SIMBOLOS-INSPECIONADOS = ;
  * @FILTRO-ARVORE-TIPOS-DE-DADO = inteiro, real, logico, cadeia, caracter, vazio;
