@@ -3,6 +3,7 @@ programa
 	inclua biblioteca Tipos
 	inclua biblioteca Util
 	inclua biblioteca Matematica --> Mat
+	inclua biblioteca Texto
 	
 	const inteiro TOTALOPCAO = 5
 	const inteiro QTDPROD = 6
@@ -19,8 +20,15 @@ programa
 				{"104","Cheeseburguer","1.35"},
 				{"105","Refrigerante","1.00"}
 			}
-		cadeia clientComanda[QTDPROD][4]
-			 //esse vetor é dividi em = [Qual Produto][Quantidade,Nome, Total]
+		cadeia clientComanda[QTDPROD][4] = {
+   {"3","Cachorro Quente","3.60","100"},
+   {"","","",""},
+   {"","","",""},
+   {"","","",""},
+   {"","","",""},
+   {"","","",""}
+}
+			 //esse vetor é dividi em = [Qual Produto][Quantidade,Nome, Total,codigo]
 		cadeia readOpcao [TOTALOPCAO] = {"[1] - Ler Cardapio","[2] - Fazer Pedido ","[3] - Ver meu Pedido ","[4] - Remover Pedido ","[0] - Sair da Lanchonete"}
 		
 		faca{
@@ -171,9 +179,13 @@ programa
 			}senao se(userInput == "4"){
 				limpa()
 				enquanto(escolhaUsuario != "0"){
-					logico haveArequest = falso
-					escreva("===== - REMOVER PEDIDO - =====", pulaLinha)
-							
+					logico TemPedido = falso
+					logico removerPedido = falso
+					cadeia escolhaUsuario04
+					cadeia title4 = "===== - REMOVER PEDIDO - ====="
+					
+					escreva(title4,pulaLinha)		
+					
 					para(inteiro i = 0; i < QTDPROD; i++){
 							
 						se(clientComanda[i][1] != ""){ //evita leitura NULL
@@ -185,10 +197,85 @@ programa
 							escreva("\n")
 						}		
 					}
-					escreva("\nDigite o codigo do produto que você quer remover")
-					escreva("\nDigite [0] para voltar ao menu anterior: ")escreva("\n>> ")
+					
+					///========================================///
+					
+					escreva("Digite o codigo do produto que você quer remover")
+					escreva("\nDigite [0] para voltar ao menu anterior: ")
+					escreva("\n>> ")
 					leia(escolhaUsuario)
-					para(inteiro j =0 ; j < QTDPROD; j ++){
+					limpa()
+
+					para(inteiro i = 0; i < QTDPROD; i++){
+
+						TemPedido = verdadeiro
+
+						se(escolhaUsuario == clientComanda[i][3]){
+
+							enquanto(nao removerPedido){
+
+								inteiro tempQtd = converteCadInt(clientComanda[i][0])
+								
+								escreva(title4,pulaLinha)
+								escreva("[0] Digite zero voltar ao menu do restaurante\n")
+								escreva("[S] Digite S para remover tudo\n")
+								escreva("[-] Digite a quantidade a remover\n")	
+								escreva(">> ")
+								leia(escolhaUsuario04)
+								limpa()
+			
+								se(Texto.caixa_alta(escolhaUsuario04) == "S"){
+									se(clientComanda[i][3] == escolhaUsuario){
+									clientComanda[i][0] = ""
+									clientComanda[i][1] = ""
+									clientComanda[i][2] = ""
+									clientComanda[i][3] = ""
+									escolhaUsuario = "0"
+	
+									removerPedido = verdadeiro
+									}		
+									
+								}senao se(escolhaUsuario04 == "0"){
+									removerPedido = verdadeiro
+									escolhaUsuario = "0"		
+					
+								}senao se(validaNumero(escolhaUsuario04)){
+									
+									inteiro tempEscolhaQtd = converteCadInt(escolhaUsuario04)
+
+									se(tempEscolhaQtd > 0 e tempEscolhaQtd <= tempQtd){
+
+										inteiro calcTotal = tempQtd - tempEscolhaQtd
+										
+										se(calcTotal == 0){
+											clientComanda[i][0] = ""
+											clientComanda[i][1] = ""
+											clientComanda[i][2] = ""
+											clientComanda[i][3] = ""
+										}										
+										
+										real valorTot = converteCadReal(clientComanda[i][2])
+										
+										clientComanda[i][0] = converteIntCad(calcTotal)
+										
+										
+										escreva("Removendo Seu Pedido da Comanda")
+										Util.aguarde(2000)
+										removerPedido = verdadeiro
+										escolhaUsuario = "0"	
+									}
+								}
+									
+								
+							}
+							
+						
+				
+
+						
+						}
+					
+					/*para(inteiro j =0 ; j < QTDPROD; j ++){
 
 						haveArequest = verdadeiro
 						
@@ -198,21 +285,22 @@ programa
 							clientComanda[j][2] = ""
 							clientComanda[j][3] = ""
 							
-					}	
-				}
+					}	*/
+
 										
 					
-			}
+					se(trataescolhaUsuario(escolhaUsuario,"0")) pare
+					}
 				
 				
-				
-			}
+				}	
+			
 			//TODO
 			//Fazer opcao 4
                //Objetivo:  Remover Produto
 			
 			//======================FINALMENU======================
-			senao se(userInput == "0"){
+			}senao se(userInput == "0"){
 				limpa()
 				escreva("==== - SAINDO DO PROGRAMA - ====")
 				Util.aguarde(1000)
@@ -285,7 +373,7 @@ programa
  * Esta seção do arquivo guarda informações do Portugol Studio.
  * Você pode apagá-la se estiver utilizando outro editor.
  * 
- * @POSICAO-CURSOR = 4887; 
+ * @POSICAO-CURSOR = 8060; 
  * @PONTOS-DE-PARADA = ;
  * @SIMBOLOS-INSPECIONADOS = ;
  * @FILTRO-ARVORE-TIPOS-DE-DADO = inteiro, real, logico, cadeia, caracter, vazio;
